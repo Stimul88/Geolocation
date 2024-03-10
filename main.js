@@ -55,7 +55,7 @@ class AddTicket {
                       <span class="title-text">${messageInput.value}</span>
                     </div>
                     <div class="geo-and-eye">
-                      <span class="geo">[${latitude} ${longitude}]</span>
+                      <span class="geo">[${latitude}, ${longitude}]</span>
                       <span class="eye">👁</span>
                     </div>
                     <span class="date">${new Date().toLocaleString()}</span>
@@ -87,21 +87,8 @@ class AddTicket {
     const geolocationInput = container.querySelector('.geolocation-input');
 
     if(AddTicket.geolocationValidate(geolocationInput.value)) {
-      const geoCoordinate = geolocationInput.value.trim().split(' ')
 
-      const newElement = `<div class="message-container">
-                      <div class="message-box">
-                      <div class="message-mark"></div>
-                    <div class="title">
-                      <span class="title-text">${messageInput.value}</span>
-                    </div>
-                    <div class="geo-and-eye">
-                      <span class="geo">[${geoCoordinate[0]} ${geoCoordinate[1]}]</span>
-                      <span class="eye">👁</span>
-                    </div>
-                    <span class="date">${new Date().toLocaleString()}</span>
-                    </div>
-                    </div>`
+      const newElement = AddTicket.reformatGeolocation(geolocationInput.value)
 
       chatArea.insertAdjacentHTML('afterbegin', newElement)
 
@@ -110,18 +97,45 @@ class AddTicket {
 
       formName.classList.add('hidden');
       chatArea.scrollTop = chatArea.scrollHeight;
-
-      return;
+      return
     }
-
     alert('Неправильно введены данные!')
   }
 
-  static geolocationValidate (geo) {
-    console.log(geo)
-    const regex = /^\d+\.\d+,\s-\d+\.\d+\d$/gm;
+  static geolocationValidate (latitude, longitude) {
 
-    return regex.test(geo);
+    const str = `${latitude}, ${longitude}`
+
+    const regex = /^\d+\D\d+,\s-?\d+\D\d+/gm;
+
+    return regex.test(str);
+  }
+
+  static reformatGeolocation(geo) {
+
+    const container = document.querySelector('.container');
+    const messageInput = container.querySelector('.message-input');
+    const date = geo.split(' ')
+
+    const latitude = parseFloat(date[0]);
+    const longitude = parseFloat(date[1]);
+
+    if(AddTicket.geolocationValidate(latitude, longitude)) {
+
+      return `<div class="message-container">
+                      <div class="message-box">
+                      <div class="message-mark"></div>
+                    <div class="title">
+                      <span class="title-text">${messageInput.value}</span>
+                    </div>
+                    <div class="geo-and-eye">
+                      <span class="geo">[${latitude} ${longitude}]</span>
+                      <span class="eye">👁</span>
+                    </div>
+                    <span class="date">${new Date().toLocaleString()}</span>
+                    </div>
+                    </div>`
+    }
   }
 }
 
@@ -150,13 +164,13 @@ class BindToDom{
       <label for="name-input" class="name-label"></label>
       <span class="error-title">Что то пошло не так</span>
        <span class="error-message">
-       К сожалению, на не удалось определить ваше 
+       К сожалению, нам не удалось определить ваше 
        местоположение, пожалуйста, дайте разрешение на
         использование геолокации, либо введите координаты
         в ручную.
        </span>
       <span class="geolocation-info">Широта и долгота через запятую (Пример: 51.50851, -0.12572)</span>
-      <input  class="geolocation-input" id="name-input" name="name-input"  minlength="4" maxlength="30" size="10"/>
+      <input  class="geolocation-input" id="name-input" name="name-input"  minlength="4" maxlength="40" size="10"/>
     </div>
     <div class="btn">
       <button class="escape" >Отмена</button>
