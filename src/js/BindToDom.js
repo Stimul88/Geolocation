@@ -10,13 +10,13 @@ export default class BindToDom{
       <label for="name-input" class="name-label"></label>
       <span class="error-title">Что то пошло не так</span>
        <span class="error-message">
-       К сожалению, на не удалось определить ваше 
+       К сожалению, нам не удалось определить ваше 
        местоположение, пожалуйста, дайте разрешение на
         использование геолокации, либо введите координаты
         в ручную.
        </span>
       <span class="geolocation-info">Широта и долгота через запятую (Пример: 51.50851, -0.12572)</span>
-      <input  class="geolocation-input" id="name-input" name="name-input"  minlength="4" maxlength="30" size="10"/>
+      <input  class="geolocation-input" id="name-input" name="name-input"  minlength="4" maxlength="40" size="10"/>
     </div>
     <div class="btn">
       <button class="escape" >Отмена</button>

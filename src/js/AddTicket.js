@@ -29,7 +29,7 @@ export default class AddTicket {
                       <span class="title-text">${messageInput.value}</span>
                     </div>
                     <div class="geo-and-eye">
-                      <span class="geo">[${latitude} ${longitude}]</span>
+                      <span class="geo">[${latitude}, ${longitude}]</span>
                       <span class="eye">👁</span>
                     </div>
                     <span class="date">${new Date().toLocaleString()}</span>
@@ -61,21 +61,8 @@ export default class AddTicket {
     const geolocationInput = container.querySelector('.geolocation-input');
 
     if(AddTicket.geolocationValidate(geolocationInput.value)) {
-      const geoCoordinate = geolocationInput.value.trim().split(' ')
 
-      const newElement = `<div class="message-container">
-                      <div class="message-box">
-                      <div class="message-mark"></div>
-                    <div class="title">
-                      <span class="title-text">${messageInput.value}</span>
-                    </div>
-                    <div class="geo-and-eye">
-                      <span class="geo">[${geoCoordinate[0]} ${geoCoordinate[1]}]</span>
-                      <span class="eye">👁</span>
-                    </div>
-                    <span class="date">${new Date().toLocaleString()}</span>
-                    </div>
-                    </div>`
+      const newElement = AddTicket.reformatGeolocation(geolocationInput.value)
 
       chatArea.insertAdjacentHTML('afterbegin', newElement)
 
@@ -84,17 +71,44 @@ export default class AddTicket {
 
       formName.classList.add('hidden');
       chatArea.scrollTop = chatArea.scrollHeight;
-
-      return;
+      return
     }
-
     alert('Неправильно введены данные!')
   }
 
-  static geolocationValidate (geo) {
-    console.log(geo)
-    const regex = /^\d+\.\d+,\s-\d+\.\d+\d$/gm;
+  static geolocationValidate (latitude, longitude) {
 
-    return regex.test(geo);
+    const str = `${latitude}, ${longitude}`
+
+    const regex = /^\d+\D\d+,\s-?\d+\D\d+/gm;
+
+    return regex.test(str);
+  }
+
+  static reformatGeolocation(geo) {
+
+    const container = document.querySelector('.container');
+    const messageInput = container.querySelector('.message-input');
+    const date = geo.split(' ')
+
+    const latitude = parseFloat(date[0]);
+    const longitude = parseFloat(date[1]);
+
+    if(AddTicket.geolocationValidate(latitude, longitude)) {
+
+      return `<div class="message-container">
+                      <div class="message-box">
+                      <div class="message-mark"></div>
+                    <div class="title">
+                      <span class="title-text">${messageInput.value}</span>
+                    </div>
+                    <div class="geo-and-eye">
+                      <span class="geo">[${latitude} ${longitude}]</span>
+                      <span class="eye">👁</span>
+                    </div>
+                    <span class="date">${new Date().toLocaleString()}</span>
+                    </div>
+                    </div>`
+    }
   }
 }
